@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Order Confirmation | Leo Mart</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<h1>LEO MART</h1>
+
+<p>Your One-Stop Online Retail Store</p>
+
+</header>
+
+
+
+<section class="confirmation">
+
+
+<h2>Thank You For Your Order!</h2>
+
+
+<p>
+Your order has been received successfully.
+</p>
+
+
+<div id="order-details">
+
+</div>
+
+
+
+<a href="index.html" class="button">
+Continue Shopping
+</a>
+
+
+</section>
+
+
+
+<footer>
+
+<p>
+© 2026 Leo Mart | Designed by Toyomfonabasi Leo Uttah
+</p>
+
+</footer>
+
+
+
+<script>
+
+
+let order =
+JSON.parse(localStorage.getItem("latestOrder"));
+
+
+
+if(order){
+
+
+document.getElementById("order-details").innerHTML = `
+
+
+<h3>Order ID:</h3>
+
+<p>${order.orderID}</p>
+
+
+<h3>Customer Information</h3>
+
+<p>
+Name: ${order.customer}
+</p>
+
+
+<p>
+Phone: ${order.phone}
+</p>
+
+
+<p>
+Address: ${order.address}
+</p>
+
+
+
+<h3>Items Purchased</h3>
+
+
+<p>
+${order.items}
+</p>
+
+
+
+<h3>Total Amount</h3>
+
+<p>
+₦${order.total.toLocaleString()}
+</p>
+
+
+`;
+
+
+}
+
+else{
+
+
+document.getElementById("order-details").innerHTML =
+"<p>No order information available.</p>";
+
+
+}
+
+
+
+</script>
+
+
+</body>
+
+</html>

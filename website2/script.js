@@ -120,12 +120,12 @@ async function placeOrder(event) {
 
     const orderID = "LM" + Date.now();
 
-    // Keep a readable version for your existing confirmation page.
+    
     const items = cart.map(product =>
         `${product.name} x ${product.quantity}`
     ).join("<br>");
 
-    // Store each product as structured data in Firebase.
+    
     const products = cart.map(product => ({
         name: product.name,
         price: product.price,
@@ -149,7 +149,7 @@ async function placeOrder(event) {
     }
 
     try {
-        // Save the order to Firebase before showing confirmation.
+       
         await db.collection("orders").add({
             ...order,
             products: products,
@@ -157,7 +157,7 @@ async function placeOrder(event) {
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        // Preserve the existing confirmation-page behaviour.
+     
         localStorage.setItem("latestOrder", JSON.stringify(order));
 
         cart = [];

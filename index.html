@@ -1,109 +1,206 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Toyomfonabasi Leo Uttah | NetCentric Projects</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Toyomfonabasi Leo Uttah | Digital Portfolio</title>
+
+    <meta name="description" content="Explore creative websites designed with style, functionality and user experience in mind.">
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <header>
-        <h1>NetCentric Web Projects</h1>
-        <p>Toyomfonabasi Leo Uttah</p>
-        <p>Registration Number: AK22/PHS/CSC/114</p>
+    <header class="hero">
+        <nav class="navbar">
+            <a href="index.html" class="brand">Toyo.</a>
+
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#explore">Explore</a>
+                <a href="#about">About</a>
+                <a href="#comments">Contact</a>
+            </div>
+        </nav>
+
+        <div class="hero-content" id="home">
+            <p class="eyebrow">WELCOME TO MY DIGITAL SPACE</p>
+
+            <h1>Creativity meets <span>functionality.</span></h1>
+
+            <p class="hero-description">
+                Discover thoughtfully designed websites that combine
+                visual appeal, simple navigation and meaningful user
+                experiences.
+            </p>
+
+            <a href="#explore" class="button primary-button">
+                Explore My Work
+            </a>
+        </div>
     </header>
 
+
     <main>
-        <section class="welcome">
-            <h2>Welcome to My Project Portal</h2>
-            <p>
-                This website contains my NetCentric web development projects.
-                Select a website below to continue.
+
+        <section class="welcome-section" id="explore">
+            <p class="eyebrow">A COLLECTION OF DIGITAL EXPERIENCES</p>
+
+            <h2>Explore My Websites</h2>
+
+            <p class="section-description">
+                From fashion and personal style to everyday shopping,
+                explore websites created with attention to detail,
+                usability and design.
             </p>
+
+            <div class="projects">
+
+                <article class="project-card">
+                    <a href="website1/index.html" class="image-link"
+                       aria-label="Explore Racks and Style">
+                        <img
+                            src="website1/images/corporate1.jpg"
+                            alt="Fashion collection from Racks and Style"
+                            class="project-image">
+                    </a>
+
+                    <div class="project-content">
+                        <p class="card-category">FASHION & STYLE</p>
+
+                        <h3>Racks and Style</h3>
+
+                        <p>
+                            Discover a stylish fashion experience designed
+                            for modern and confident individuals. Explore
+                            collections, discover the brand and enjoy a
+                            clean, visually appealing layout.
+                        </p>
+
+                        <a href="website1/index.html" class="button">
+                            Explore Collection
+                            <span aria-hidden="true">&rarr;</span>
+                        </a>
+                    </div>
+                </article>
+
+
+                <article class="project-card">
+                    <a href="website2/index.html" class="image-link"
+                       aria-label="Explore Leo Mart">
+                        <img
+                            src="website2/images/backpack.jfif"
+                            alt="Backpack product from Leo Mart"
+                            class="project-image">
+                    </a>
+
+                    <div class="project-content">
+                        <p class="card-category">SHOPPING & RETAIL</p>
+
+                        <h3>Leo Mart</h3>
+
+                        <p>
+                            Explore a convenient retail shopping experience
+                            where customers can browse products, select
+                            quantities and proceed with their purchases.
+                        </p>
+
+                        <a href="website2/index.html" class="button">
+                            Shop Now
+                            <span aria-hidden="true">&rarr;</span>
+                        </a>
+                    </div>
+                </article>
+
+            </div>
         </section>
 
-        <section class="projects">
 
-            <div class="project-card">
-                <h2>Website 1</h2>
-                <h3>Racks and Style</h3>
+        <section class="about-section" id="about">
+            <div class="about-content">
+                <p class="eyebrow">BEHIND THE WORK</p>
+
+                <h2>A Little About Me</h2>
+
                 <p>
-                    A five-page fashion brand website designed using HTML and CSS.
+                    Hello, I'm Toyomfonabasi Leo Uttah, a Computer Science
+                    student with an interest in web development, creative
+                    design and building useful digital experiences.
                 </p>
 
-                <a href="website1/index.html" class="button">
-                    Visit Racks and Style
-                </a>
-            </div>
-
-            <div class="project-card">
-                <h2>Website 2</h2>
-                <h3>Retail Sales Website</h3>
                 <p>
-                    A simple retail sales website developed using HTML, CSS
-                    and JavaScript.
+                    My goal is to create websites that are not only
+                    visually appealing but also easy to navigate and
+                    practical to use.
                 </p>
-
-                <a href="website2/index.html" class="button">
-                    Visit Retail Store
-                </a>
             </div>
 
+            <div class="profile-photo">
+                <!--
+                    Save your personal picture as my-photo.jpg
+                    inside the main website's images folder.
+                -->
+                <img
+                    src="images/my-photo.jpg"
+                    alt="Portrait of Toyomfonabasi Leo Uttah"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+
+                <div class="photo-placeholder">
+                    Add your personal photograph here
+                </div>
+            </div>
         </section>
 
-        <section class="comment-section">
-            <h2>Further Instructions</h2>
 
-            <p>
-                Please enter any comments or further instructions below.
+        <section class="comment-section" id="comments">
+            <p class="eyebrow">LET'S CONNECT</p>
+
+            <h2>Comments & Instructions</h2>
+
+            <p class="section-description">
+                Have feedback or a suggestion? Leave a comment below.
+                Your feedback is welcome.
             </p>
 
             <form id="commentForm">
 
-    <label for="name">Name:</label>
+                <label for="name">Your Name</label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Enter your name"
+                    required>
 
-    <input 
-    type="text" 
-    name="name"
-    placeholder="Enter your name"
-    required>
+                <label for="message">Comment or Instruction</label>
+                <textarea
+                    id="message"
+                    name="message"
+                    rows="6"
+                    placeholder="Write your comment here..."
+                    required></textarea>
 
+                <button type="submit" id="submitButton" class="button">
+                    Send Comment
+                </button>
 
-    <br><br>
+                <p id="formStatus" class="form-status"
+                   role="status" aria-live="polite"></p>
 
-
-
-    <label for="comment">
-    Comment / Instruction:
-    </label>
-
-
-    <textarea
-    name="message"
-    rows="6"
-    placeholder="Enter your comment or further instructions here..."
-    required>
-    </textarea>
-
-
-    <br>
-
-
-    <button type="submit">
-    Send Comment
-    </button>
-
-
-</form>
+            </form>
         </section>
 
     </main>
 
+
     <footer>
-        <p>&copy; 2026 Toyomfonabasi Leo Uttah | AK22/PHS/CSC/114</p>
+        <p>&copy; 2026 Toyomfonabasi Leo Uttah. All rights reserved.</p>
     </footer>
-<script src="script.js"></script>
+
+    <script src="script.js"></script>
 
 </body>
 </html>

@@ -1,5 +1,7 @@
 
+
 let cart = [];
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyCTVnLfVINOp23ijE6W4kC2qKfIue1KtCw",
@@ -11,18 +13,33 @@ const firebaseConfig = {
     measurementId: "G-P76K22FMYM"
 };
 
-firebase.initializeApp(firebaseConfig);
+
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+
 const db = firebase.firestore();
 
+
+
 function addToCart(productName, productPrice) {
-    let existingProduct = cart.find(item => item.name === productName);
+    const price = Number(productPrice);
+
+    if (!productName || !Number.isFinite(price) || price < 0) {
+        alert("Invalid product information.");
+        return;
+    }
+
+    const existingProduct = cart.find(
+        item => item.name === productName
+    );
 
     if (existingProduct) {
         existingProduct.quantity++;
     } else {
         cart.push({
             name: productName,
-            price: productPrice,
+            price: price,
             quantity: 1
         });
     }
@@ -30,7 +47,12 @@ function addToCart(productName, productPrice) {
     displayCart();
 }
 
+
+
+
 function changeQuantity(index, amount) {
+    if (!cart[index]) return;
+
     cart[index].quantity += amount;
 
     if (cart[index].quantity <= 0) {
@@ -40,36 +62,66 @@ function changeQuantity(index, amount) {
     displayCart();
 }
 
+
+
 function displayCart() {
-    let cartItems = document.getElementById("cart-items");
+    const cartItems = document.getElementById("cart-items");
+    const totalElement = document.getElementById("total");
+
+    if (!cartItems || !totalElement) return;
+
     cartItems.innerHTML = "";
 
     let total = 0;
 
     if (cart.length === 0) {
-        cartItems.innerHTML = "<p>Your cart is empty.</p>";
+        cartItems.textContent = "Your cart is empty.";
     } else {
         cart.forEach(function(item, index) {
-            total += item.price * item.quantity;
+            const subtotal = item.price * item.quantity;
+            total += subtotal;
 
-            cartItems.innerHTML += `
-                <div class="cart-product">
-                    <p>
-                        ${item.name}<br>
-                        ₦${item.price.toLocaleString()}
-                    </p>
+            const productDiv = document.createElement("div");
+            productDiv.className = "cart-product";
 
-                    <button onclick="changeQuantity(${index}, -1)">-</button>
-                    <span>${item.quantity}</span>
-                    <button onclick="changeQuantity(${index}, 1)">+</button>
-                </div>
-            `;
+            const productInfo = document.createElement("p");
+            productInfo.textContent =
+                item.name + " - ₦" +
+                item.price.toLocaleString("en-NG") +
+                " each";
+
+            const decreaseButton = document.createElement("button");
+            decreaseButton.type = "button";
+            decreaseButton.textContent = "-";
+            decreaseButton.addEventListener("click", function() {
+                changeQuantity(index, -1);
+            });
+
+            const quantity = document.createElement("span");
+            quantity.textContent = " " + item.quantity + " ";
+
+            const increaseButton = document.createElement("button");
+            increaseButton.type = "button";
+            increaseButton.textContent = "+";
+            increaseButton.addEventListener("click", function() {
+                changeQuantity(index, 1);
+            });
+
+            productDiv.appendChild(productInfo);
+            productDiv.appendChild(decreaseButton);
+            productDiv.appendChild(quantity);
+            productDiv.appendChild(increaseButton);
+
+            cartItems.appendChild(productDiv);
         });
     }
 
-    document.getElementById("total").innerHTML =
-        "Total: ₦" + total.toLocaleString();
+    totalElement.textContent =
+        "Total: ₦" + total.toLocaleString("en-NG");
 }
+
+
+
 
 function checkout() {
     if (cart.length === 0) {
@@ -77,24 +129,48 @@ function checkout() {
         return;
     }
 
-    document.getElementById("checkout-form").style.display = "block";
-    document.getElementById("checkout-form").scrollIntoView({
-        behavior: "smooth"
+    const checkoutForm = document.getElementById("checkout-form");
+
+    if (!checkoutForm) {
+        alert("Checkout form could not be found.");
+        return;
+    }
+
+    checkoutForm.style.display = "block";
+
+    checkoutForm.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
     });
 }
 
+
+
+
 function searchProducts() {
-    let input = document.getElementById("searchBox").value.toLowerCase();
-    let products = document.getElementsByClassName("product-card");
+    const searchBox = document.getElementById("searchBox");
+
+    if (!searchBox) return;
+
+    const input = searchBox.value.toLowerCase().trim();
+    const products = document.getElementsByClassName("product-card");
 
     for (let i = 0; i < products.length; i++) {
-        let name = products[i]
-            .getElementsByTagName("h3")[0]
-            .textContent.toLowerCase();
+        const heading = products[i].querySelector("h3");
 
-        products[i].style.display = name.includes(input) ? "block" : "none";
+        const productName = heading
+            ? heading.textContent.toLowerCase()
+            : "";
+
+        products[i].style.display =
+            productName.includes(input) ? "" : "none";
     }
 }
+
+
+
+// PLACE ORDER IN FIRESTORE
+
 
 async function placeOrder(event) {
     event.preventDefault();
@@ -104,68 +180,107 @@ async function placeOrder(event) {
         return;
     }
 
-    const customer = document.getElementById("customerName").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    const address = document.getElementById("address").value.trim();
+    const customerInput = document.getElementById("customerName");
+    const phoneInput = document.getElementById("phone");
+    const addressInput = document.getElementById("address");
+
+    if (!customerInput || !phoneInput || !addressInput) {
+        alert("Checkout form fields are missing. Please check your HTML.");
+        return;
+    }
+
+    const customer = customerInput.value.trim();
+    const phone = phoneInput.value.trim();
+    const address = addressInput.value.trim();
 
     if (!customer || !phone || !address) {
         alert("Please complete all customer information.");
         return;
     }
 
-    const total = cart.reduce(
-        (sum, product) => sum + product.price * product.quantity,
-        0
-    );
+    const total = cart.reduce(function(sum, product) {
+        return sum + product.price * product.quantity;
+    }, 0);
 
     const orderID = "LM" + Date.now();
 
-    
-    const items = cart.map(product =>
-        `${product.name} x ${product.quantity}`
-    ).join("<br>");
-
-    
-    const products = cart.map(product => ({
-        name: product.name,
-        price: product.price,
-        quantity: product.quantity,
-        subtotal: product.price * product.quantity
-    }));
+    const products = cart.map(function(product) {
+        return {
+            name: product.name,
+            price: product.price,
+            quantity: product.quantity,
+            subtotal: product.price * product.quantity
+        };
+    });
 
     const order = {
         orderID: orderID,
         customer: customer,
         phone: phone,
         address: address,
-        items: items,
-        total: total
+        products: products,
+        total: total,
+        status: "New",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
     };
 
-    const submitButton = event.submitter;
+    const submitButton =
+        event.submitter ||
+        document.querySelector('#checkout-form button[type="submit"]');
+
     if (submitButton) {
         submitButton.disabled = true;
         submitButton.textContent = "Saving Order...";
     }
 
     try {
-       
-        await db.collection("orders").add({
+        // Save the order to the Firestore "orders" collection.
+        const documentReference = await db
+            .collection("orders")
+            .add(order);
+
+        // Save a copy for the confirmation page.
+        const savedOrder = {
             ...order,
-            products: products,
-            status: "New",
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+            items: products.map(function(product) {
+                return product.name + " x " + product.quantity;
+            }).join(", "),
+            firestoreID: documentReference.id,
+            createdAt: new Date().toISOString()
+        };
 
-     
-        localStorage.setItem("latestOrder", JSON.stringify(order));
+        localStorage.setItem(
+            "latestOrder",
+            JSON.stringify(savedOrder)
+        );
 
+        // Empty the cart only after Firestore confirms the save.
         cart = [];
+        displayCart();
+
+        // Go to the order confirmation page.
         window.location.href = "confirmation.html";
 
     } catch (error) {
         console.error("Order saving failed:", error);
-        alert("Your order could not be saved. Please try again.");
+
+        let message = "Your order could not be saved.";
+
+        if (error.code === "permission-denied") {
+            message +=
+                "\nFirebase rejected the request. Check your Firestore security rules.";
+        } else if (error.code === "unavailable") {
+            message +=
+                "\nThe database is temporarily unavailable. Check your internet connection.";
+        } else if (error.code === "failed-precondition") {
+            message +=
+                "\nThe database configuration needs attention.";
+        } else {
+            message +=
+                "\n" + (error.message || "Unknown error.");
+        }
+
+        alert(message);
 
         if (submitButton) {
             submitButton.disabled = false;
@@ -173,3 +288,10 @@ async function placeOrder(event) {
         }
     }
 }
+
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    displayCart();
+});
